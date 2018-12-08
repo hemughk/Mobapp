@@ -1,0 +1,10 @@
+Mobapp\Contacts\model\Person.class
+Mobapp\Contacts\dao\MobappDAO.class
+Mobapp\Contacts\App.class
+Mobapp\Contacts\model\Usercontact.class
+Mobapp\Contacts\service\MobappServiceImpl.class
+Mobapp\Contacts\model\Usergroup.class
+Mobapp\Contacts\dao\MobappDAOImpl.class
+Mobapp\Contacts\controller\MobappController.class
+Mobapp\Contacts\model\Userdetail.class
+Mobapp\Contacts\service\MobappService.class

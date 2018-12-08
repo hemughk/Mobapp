@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>TimeSheet</title>
+       
+       
+		<script src="js/jquery.min.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+         <script src="js/angular.min.js"></script>
+         <script type="text/javascript" src="js/ng-cordova.js"></script>
+        <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+       
+        
+	
+    <h1>TimeSheet</h1>
+
+    </head>
+   <style>
+     body {
+    background-color: #E6E6FA;
+}
+
+h1 {
+    color: orange;
+    text-align: center;
+}
+    
+    
+.button {
+  display: inline-block;
+  padding: 6px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  text-align: center;	
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 08px;
+  box-shadow: 0 2px #999;
+}
+
+.button:hover {background-color: #3e8e41}
+
+.button:active {
+  background-color: #3e8e41;
+  box-shadow: 0 3px #666;
+  transform: translateY(4px);
+}
+    
+ .button2 {background-color: #008CBA;}
+ .button3 {background-color: #f44336;}
+    
+    table#t01 {
+        background-color: #f1f1c1;
+    } 
+     
+    </style>
+
+<body>
+ 
+<script>
+    
+     document.addEventListener("deviceready",function(){
+     angular.bootstrap($('app'), []);
+     init();
+    
+ },false);
+
+    function init(){
+       angular.element(document.getElementById('Ref')).scope().GetRemaining();
+   }
+    
+      
+    var app = angular.module("app", []);
+    
+    
+    
+    app.controller("HttpGetController", function ($scope, $http) {
+         $scope.myVar =true;
+        $scope.SendData = function () {
+           // use $.param jQuery function to serialize data from JSON 
+            var data = $.param({
+                userName: $scope.userName,
+                password: $scope.password
+            });
+            
+          var date = getDate();
+          var time = (new Date()).toLocaleTimeString();
+          var mockDataForThisTest = JSON.stringify({userid:"user",indate:date,       intime:time,devId:device.uuid});
+          window.alert(device.uuid);
+		  window.alert(date);
+          
+            //http://node19674-env-6769160.mj.milesweb.cloud
+            $http.post('http://192.168.0.3:8080/SpringEMB/services/postTime/inTime', mockDataForThisTest)
+            .success(function (data, status) {
+             $scope.PostDataResponse = data.userval;
+             var date12 = new Date();
+          // date12.setMinutes(date12.getMinutes() + 20);
+             date12.setHours(date12.getHours()+8);
+             date12.setMinutes(date12.getMinutes() + 15);
+                
+            cordova.plugins.notification.local.schedule({
+            text: "Delayed Notification",
+            firstAt: date12,
+            led: "FF0000",
+            sound:"file://sound.mp3"
+            });
+                
+            })
+            .error(function (data, status) {
+                $scope.ResponseDetails = "Data: " + data +
+                    "<hr />status: " + status;
+            });
+        };
+        
+        
+    $scope.SendOutData = function () {
+        
+        var date = getDate();
+          var time = (new Date()).toLocaleTimeString();
+         var mockDataForThisTest = JSON.stringify({userid:"user",indate:date,       intime:time,devId:device.uuid});
+
+            $http.post('http://192.168.0.3:8080/SpringEMB/services/postTime/outTime', mockDataForThisTest)
+            .success(function (data, status) {
+                $scope.PostDataResponse = data.userval;
+                window.alert("Outtime Logged");
+               
+            })
+            .error(function (data, status) {
+                $scope.ResponseDetails = "Data: " + data +
+                    "<hr />status: " + status;
+            });
+        };
+
+        
+         $scope.GetData = function () {
+            
+        var date1 = getDate();
+        var time1 = (new Date()).toLocaleTimeString();
+        
+        $http.get('http://192.168.0.3:8080/SpringEMB/services/getUsers/all',
+        
+    {
+        params: {
+            date: date1,
+            time: time1,
+            devId:device.uuid
+        }
+     })
+            .success(function (data, status) {
+                $scope.names = data;
+           })
+            .error(function (data, status) {
+                window.alert("error:"+status);
+               
+            });
+        };
+        
+     $scope.GetRemaining = function () {
+         
+        var date1 = getDate();
+        var time1 = (new Date()).toLocaleTimeString();
+        $http.get('http://192.168.0.3:8080/SpringEMB/services/getUsers/datewise',
+                         
+          {
+        params: {
+            date: date1,
+            time: time1,
+            devId:device.uuid
+        }
+     })
+            .success(function (data, status) {
+                //window.alert("success:"+status);
+                 $scope.PostDataResponse = data.getRemtime;
+         
+       
+            })
+            .error(function (data, status) {
+            if(status==0)
+                window.alert("Unable to connect server-->"+status);
+               
+            });
+        };
+  
+    });
+	
+	function getDate(){
+	var dateObj = new Date();
+    var month = dateObj.getUTCMonth() + 1; //months from 1-12
+    var day = dateObj.getUTCDate();
+    var year = dateObj.getUTCFullYear();
+
+     return month + "/" + day + "/" + year;
+	}
+</script>
+    
+   
+ <form name="form" ng-app="app" ng-controller="HttpGetController">   
+<div>
+    
+<table>
+    <tr>
+        <td><button size="10" class="button" ng-click="SendData()">InTime</button></td>
+        
+    </tr>
+</table>
+       
+<table>        
+    <tr>
+        <td><label><b><font color="red">Date:</font></b></label></td>
+        <td><font color="red"> {{ PostDataResponse.indate }}</font></td> 
+    </tr>
+        
+    <tr>    
+        <td><label><b><font color="indigo">Time:</font></b></label></td>
+        <td><font color="indigo">{{ PostDataResponse.intime }}</font></td>
+    </tr>
+        
+        
+    <tr>
+        <td><b><font color="purple">Completed time:</font></b></td>
+        <td><font color="purple">{{PostDataResponse.remTime}} </font></td>
+        <td>
+ 
+ <button id="Ref" class="button button2" ng-click="GetRemaining()">Refresh</button> </td>
+    </tr> 
+    
+     <tr>
+        <td><button size="10" class="button" ng-click="SendOutData()">OutTime</button></td>
+        
+    </tr>
+        
+    <tr>
+    <td>
+<button class="button button3" ng-click="GetData()">GetMonthlyData</button></td>
+    </tr>
+    </table>
+   <br> 
+    
+ <table id="t01" border="4px" c ng-show="names">  
+    
+    
+    
+ <tr>
+    <th>InDate</th>
+    <th>InTime</th>
+    <th>OutTime</th>
+    <th>TimeSpent</th>
+     
+  </tr>
+   
+  <tr ng-repeat="x in names">
+    <td>{{ x.indate }}</td>
+    <td>{{ x.intime }}</td>
+    <td>{{ x.outtime }}</td>
+    <td>{{ x.timespent }}</td>
+      
+  </tr>
+        
+</table>
+</div>
+</form>
+
+    
+</body>
+</html>
