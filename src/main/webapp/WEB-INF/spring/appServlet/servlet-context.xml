@@ -44,6 +44,8 @@
 			<beans:list>
 				<beans:value>Mobapp.Contacts.model.Usercontact</beans:value>
 				<beans:value>Mobapp.Contacts.model.Usergroup</beans:value>
+				<beans:value>Mobapp.Contacts.model.Userinfo</beans:value>
+				<beans:value>Mobapp.Contacts.model.User</beans:value>
 				<beans:value>Mobapp.Contacts.model.Person</beans:value>
 			</beans:list>
 		</beans:property>
@@ -62,6 +64,14 @@
 	<beans:bean id="mobappService" class="Mobapp.Contacts.service.MobappServiceImpl">
 		<beans:property name="mobappDAO" ref="mobappDAO"></beans:property>
 	</beans:bean>
+	
+		<beans:bean id="personDAO" class="Mobapp.Contacts.dao.PersonDAOImpl">
+		<beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
+	</beans:bean>
+	<beans:bean id="personService" class="Mobapp.Contacts.service.PersonServiceImpl">
+		<beans:property name="personDAO" ref="personDAO"></beans:property>
+	</beans:bean>
+	
 	<context:component-scan base-package="Mobapp.Contacts.controller" />
 	
 	<tx:annotation-driven transaction-manager="transactionManager"/>
@@ -69,6 +79,5 @@
 	<beans:bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<beans:property name="sessionFactory" ref="hibernate4AnnotatedSessionFactory" />
 	</beans:bean>
-
 
 </beans:beans>
