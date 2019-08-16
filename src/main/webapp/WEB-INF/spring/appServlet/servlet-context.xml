@@ -31,9 +31,9 @@
 		destroy-method="close">
 		<beans:property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<beans:property name="url"
-			value="jdbc:mysql://mysql:3306/mobdb?autoReconnect=true" />
-		<beans:property name="username" value="user" />
-		<beans:property name="password" value="password" />
+			value="jdbc:mysql://node29425-env-2121145.mj.milesweb.cloud/mobdb?autoReconnect=true" />
+		<beans:property name="username" value="root" />
+		<beans:property name="password" value="NVAscf67631" />
 		<beans:property name="testOnBorrow" value="true" />
 		<beans:property name="validationQuery" value="SELECT 1" />
 	</beans:bean>
